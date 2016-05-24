@@ -1,0 +1,11 @@
+{
+  "name": "loginless",
+  "version": "1.0.0",
+  "description": "loginless module",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "author": "",
+  "license": "ISC"
+}
