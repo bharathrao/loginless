@@ -20,9 +20,6 @@ module.exports = function (baseuri, loginless, nonce, crypto) {
     }
   }
 
-  // /api/order
-  // https://test.coinpit.io/api/order
-  // https://testinsight.coinp.it/insight-api/tx/7012ueio21e02eio21ue9
   function rest(method, url, data, beforeSend, retry) {
     beforeSend  = beforeSend || REST.beforeSend
     var headers = beforeSend(method, url, data)

@@ -1,13 +1,14 @@
 var crypto  = require('./crypto')
 var Account = require('./Account')
+
 function ll(baseurl, authurl, network, errorHandler) {
   var loginless   = {}
   var bitcoinutil = require('bitcoinutil')(network)
 
-  var nonce = require('./nonce')(authurl)
-
+  var nonce = loginless.nonce = require('./nonce')(authurl)
   var Rest = loginless.rest = require('./Rest')(baseurl, loginless, nonce, crypto)
   loginless.socket = require('./socket')(loginless, nonce, crypto, errorHandler)
+  
   var account, loginPromise
   var userPrivateKey
 
