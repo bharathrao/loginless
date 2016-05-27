@@ -7,7 +7,7 @@
     "test": "mocha specs"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "affirm.js": "^1.0.0",
     "bitcoinjs-lib": "^2.2.0",
