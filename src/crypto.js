@@ -35,7 +35,7 @@ module.exports = (function () {
 
   ll.hash160 = function (input) {
     affirm(input, 'No input provided for hash160')
-    
+
     var hash = bitcoin.crypto.hash160(new Buffer(input, "utf8")).toString('hex')
     return hash
   }
@@ -67,7 +67,7 @@ module.exports = (function () {
 
   ll.authenticateHMAC = function (user, auth, method, uri, body, nonce) {
     affirm(user && auth && auth.startsWith("HMAC "), badSignature(auth), 401)
-    var authorization = ll.getAuthorization(user.userid, user.getSecret(), method, uri, body, nonce)
+    var authorization = ll.getAuthorization(user.userid, user.secret, method, uri, body, nonce)
     affirm(authorization === auth, badSignature(auth, 'Authentication failed. HMAC mismatch'), 401)
   }
 
@@ -81,7 +81,7 @@ module.exports = (function () {
   }
 
   function badSignature(auth, err) {
-    return (err || 'HMAC authentication needed ') + auth
+    return (err || 'HMAC authentication needed') + ' ' + auth
   }
 
   return ll
