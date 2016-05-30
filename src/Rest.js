@@ -20,22 +20,31 @@ module.exports = function (baseuri, loginless, nonce, crypto) {
     }
   }
 
-  function rest(method, url, data, beforeSend, retry) {
+  function rest(method, url, headers, data, beforeSend, retry) {
     beforeSend  = beforeSend || REST.beforeSend
-    var headers = beforeSend(method, url, data)
+    var updated = concat(headers, beforeSend(method, url, data))
     var current = Date.now()
-    return methodMap[method](baseuri + url, headers, data)
+    return methodMap[method](baseuri + url, updated, data)
       .then(function (result) {
         nonce.calibrateREST(restjs.getHeaderValue(result.headers, 'request-received'), current, method, url)
         return result.body
       })
       .catch(function (e) {
         if (e.statusCode === 401 && !retry) {
-          return handleNonceErrorWithOPTIONS(method, url, data, beforeSend)
+          return handleNonceErrorWithOPTIONS(method, url, headers, data, beforeSend)
         } else {
           throw e
         }
       })
+  }
+
+  function concat(headers, loginlessHeaders) {
+    headers          = headers || {}
+    loginlessHeaders = loginlessHeaders || {}
+    Object.keys(headers).forEach(function (key) {
+      loginlessHeaders[key] = headers[key]
+    })
+    return loginlessHeaders
   }
 
   function handleNonceErrorWithOPTIONS(method, url, data, beforeSend) {
@@ -45,20 +54,20 @@ module.exports = function (baseuri, loginless, nonce, crypto) {
     })
   }
 
-  REST.post = function (url, data, beforeSend) {
-    return rest("POST", url, data, beforeSend)
+  REST.post = function (url, headers, data, beforeSend) {
+    return rest("POST", url, headers, data, beforeSend)
   }
 
-  REST.put = function (url, data, beforeSend) {
-    return rest("PUT", url, data, beforeSend)
+  REST.put = function (url, headers, data, beforeSend) {
+    return rest("PUT", url, headers, data, beforeSend)
   }
 
-  REST.get = function (url, beforeSend) {
-    return rest("GET", url, undefined, beforeSend)
+  REST.get = function (url, headers, beforeSend) {
+    return rest("GET", url, headers, undefined, beforeSend)
   }
 
-  REST.del = function (url, beforeSend) {
-    return rest("DELETE", url, undefined, beforeSend)
+  REST.del = function (url, headers, beforeSend) {
+    return rest("DELETE", url, headers, undefined, beforeSend)
   }
 
   return REST

@@ -2,12 +2,14 @@ module.exports = function (loginless, nonce, crypto, errorHandler) {
   var sock     = {}
   sock.logging = false
 
-  sock.send = function (socket, body, method, uri, retry) {
+  sock.send = function (socket, method, uri, headers, body, retry) {
     var account       = loginless.getAccount()
     var requestNonce  = nonce.getNonce()
     var authorization = crypto.getAuthorization(account.userid, account.secret, method, uri, body, requestNonce)
+    headers = headers || {}
+    headers.authorization = authorization
     if (sock.logging) console.log("sending on socket", method, uri)
-    socket.emit(uri, { authorization: authorization, method: method, uri: uri, body: body, nonce: requestNonce, current: Date.now(), retry: retry })
+    socket.emit(uri, { headers: headers, method: method, uri: uri, body: body, nonce: requestNonce, current: Date.now(), retry: retry })
   }
 
   sock.onAuthError = function (socket, message) {
