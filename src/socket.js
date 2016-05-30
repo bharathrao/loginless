@@ -15,17 +15,17 @@ module.exports = function (loginless, nonce, crypto, errorHandler) {
   sock.onAuthError = function (socket, message) {
     if (message.data.retry) return errorHandler && errorHandler(message.error)
     nonce.calibrate(message.ntp.client, message.ntp.server)
-    sock.send(socket, message.data.body, message.data.method, message.data.uri, true)
+    sock.send(socket, message.data.method, message.data.uri, message.data.headers, message.data.body, true)
   }
 
   sock.register = function (socket) {
     var account = loginless.getAccount()
-    sock.send(socket, { userid: account.userid, publicKey: account.userPublicKey }, "GET", "/register")
+    sock.send(socket, "GET", "/register", {}, { userid: account.userid, publicKey: account.userPublicKey })
   }
 
   sock.unregister = function (socket) {
     var account = loginless.getAccount()
-    sock.send(socket, { userid: account.userid, publicKey: account.userPublicKey }, "GET", "/unregister")
+    sock.send(socket, "GET", "/unregister", {}, { userid: account.userid, publicKey: account.userPublicKey })
   }
 
   sock.ntp = function (clientTimestamp, serverTimestamp) {
