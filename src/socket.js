@@ -9,7 +9,7 @@ module.exports = function (loginless, nonce, crypto, errorHandler) {
     headers = headers || {}
     headers.authorization = authorization
     if (sock.logging) console.log("sending on socket", method, uri)
-    socket.emit(uri, { headers: headers, method: method, uri: uri, body: body, nonce: requestNonce, current: Date.now(), retry: retry })
+    socket.emit(method + " " + uri, { headers: headers, method: method, uri: uri, body: body, nonce: requestNonce, current: Date.now(), retry: retry })
   }
 
   sock.onAuthError = function (socket, message) {
@@ -20,12 +20,12 @@ module.exports = function (loginless, nonce, crypto, errorHandler) {
 
   sock.register = function (socket) {
     var account = loginless.getAccount()
-    sock.send(socket, { userid: account.userid, publicKey: account.userPublicKey }, "GET", "register")
+    sock.send(socket, { userid: account.userid, publicKey: account.userPublicKey }, "GET", "/register")
   }
 
   sock.unregister = function (socket) {
     var account = loginless.getAccount()
-    sock.send(socket, { userid: account.userid, publicKey: account.userPublicKey }, "GET", "unregister")
+    sock.send(socket, { userid: account.userid, publicKey: account.userPublicKey }, "GET", "/unregister")
   }
 
   sock.ntp = function (clientTimestamp, serverTimestamp) {
