@@ -17,9 +17,9 @@ function ll(baseurl, authurl, network, errorHandler) {
     var signature = bitcoinutil.signMessage(privateKey.privateKey, registrationData)
     loginPromise  = Rest.post(nonce.authUri, {},[{ message: registrationData, signature: signature }], beforeSend.bind(undefined, privateKey.address))
       .then(function (meData) {
-        var account = createAccount(meData, privateKey, network)
-        logServerKey("CREATE", account)
-        return account
+        var loginData = createAccount(meData, privateKey, network)
+        logServerKey("CREATE")
+        return loginData
       })
     return loginPromise
   }
@@ -28,14 +28,14 @@ function ll(baseurl, authurl, network, errorHandler) {
     privateKey   = bitcoinutil.addressFromPrivateKey(privateKey)
     loginPromise = Rest.get(nonce.authUri + privateKey.publicKey, {}, beforeSend.bind(undefined, privateKey.address))
       .then(function (meData) {
-        var account = createAccount(meData, privateKey, network)
-        logServerKey("GET", account)
-        return account
+        var loginData = createAccount(meData, privateKey, network)
+        logServerKey("GET")
+        return loginData
       })
     return loginPromise
   }
 
-  function logServerKey(action, account){
+  function logServerKey(action){
     console.log("Successful:", action,  "server key. userid:", account.userid, "multisig:", account.accountid, "marginid:", account.serverAddress)
   }
   loginless.getAccount = function () {
