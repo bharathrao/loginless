@@ -30,7 +30,7 @@ module.exports = function (baseuri, loginless, nonce, crypto) {
         return result.body
       })
       .catch(function (e) {
-        if (e.statusCode === 401 && !retry) {
+        if ((e.statusCode === 401 || e.status === 401) && !retry) {
           return handleNonceErrorWithOPTIONS(method, url, headers, data, beforeSend)
         } else {
           throw e
@@ -47,10 +47,9 @@ module.exports = function (baseuri, loginless, nonce, crypto) {
     return loginlessHeaders
   }
 
-  function handleNonceErrorWithOPTIONS(method, url, data, beforeSend) {
-    return rest("OPTIONS", url, undefined, beforeSend).then(function () {
-      beforeSend.nonce = nonce.getNonce()
-      return rest(method, url, data, beforeSend, true)
+  function handleNonceErrorWithOPTIONS(method, url, headers, data, beforeSend) {
+    return rest("OPTIONS", url, headers, undefined, beforeSend).then(function () {
+      return rest(method, url, headers, data, beforeSend, true)
     })
   }
 
