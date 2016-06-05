@@ -1,4 +1,5 @@
 module.exports = function (authUri) {
+  var util = require('util')
   var offset     = 0
   var nonce      = {}
   nonce.forNonce = { POST: true, PUT: true, DELETE: true, OPTIONS: true, TRACE: true }
@@ -14,7 +15,7 @@ module.exports = function (authUri) {
   nonce.calibrate = function (clientTimestamp, serverTimestamp) {
     if (clientTimestamp && serverTimestamp) {
       offset = serverTimestamp - clientTimestamp
-      if (nonce.logging) console.log('Nonce offset:', offset, 'clientTimestamp:', clientTimestamp, 'serverTimestamp:', serverTimestamp)
+      if (nonce.logging) util.log(Date.now(), 'Nonce offset:', offset, 'clientTimestamp:', clientTimestamp, 'serverTimestamp:', serverTimestamp)
     }
   }
 

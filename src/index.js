@@ -1,5 +1,6 @@
 var crypto  = require('./crypto')
 var Account = require('./Account')
+var util = require('util')
 
 function ll(baseurl, authurl, network, errorHandler) {
   var loginless   = {}
@@ -36,7 +37,7 @@ function ll(baseurl, authurl, network, errorHandler) {
   }
 
   function logServerKey(action){
-    console.log("Successful:", action,  "server key. userid:", account.userid, "multisig:", account.accountid, "marginid:", account.serverAddress)
+    util.log(Date.now(), "Successful:", action,  "server key. userid:", account.userid, "multisig:", account.accountid, "marginid:", account.serverAddress)
   }
   loginless.getAccount = function () {
     return account

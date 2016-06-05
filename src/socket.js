@@ -1,14 +1,15 @@
 module.exports = function (loginless, nonce, crypto, errorHandler) {
+  var util     = require('util')
   var sock     = {}
   sock.logging = false
 
   sock.send = function (socket, method, uri, headers, body, retry) {
-    var account       = loginless.getAccount()
-    var requestNonce  = nonce.getNonce()
-    var authorization = crypto.getAuthorization(account.userid, account.secret, method, uri, body, requestNonce)
-    headers = headers || {}
+    var account           = loginless.getAccount()
+    var requestNonce      = nonce.getNonce()
+    var authorization     = crypto.getAuthorization(account.userid, account.secret, method, uri, body, requestNonce)
+    headers               = headers || {}
     headers.authorization = authorization
-    if (sock.logging) console.log("sending on socket", method, uri)
+    if (sock.logging) util.log(Date.now(), "sending on socket", method, uri)
     socket.emit(method + " " + uri, { headers: headers, method: method, uri: uri, body: body, nonce: requestNonce, current: Date.now(), retry: retry })
   }
 
