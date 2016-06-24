@@ -29,8 +29,8 @@ module.exports = function (loginless, nonce, crypto, errorHandler) {
     sock.send(socket, "GET", "/unregister", {}, { userid: account.userid, publicKey: account.userPublicKey })
   }
 
-  sock.ntp = function (clientTimestamp, serverTimestamp) {
-    nonce.calibrate(clientTimestamp, serverTimestamp)
+  sock.ntp = function (ntpData) {
+    nonce.calibrate(ntpData.client, ntpData.server)
   }
 
   return sock
