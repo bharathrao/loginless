@@ -7,7 +7,7 @@ module.exports = function (authUri) {
   nonce.authUri  = authUri
 
   nonce.calibrateREST = function (clientTimestamp, serverTimestamp, method, url) {
-    if (nonce.forNonce[method] || url.startsWith(nonce.authUri)) {
+    if (nonce.forNonce[method] || (url && url.startsWith(nonce.authUri))) {
       nonce.calibrate(serverTimestamp, clientTimestamp, method, url)
     }
   }
