@@ -8,13 +8,13 @@ module.exports = function (authUri) {
 
   nonce.calibrateREST = function (clientTimestamp, serverTimestamp, method, url) {
     if (nonce.forNonce[method] || (url && url.startsWith(nonce.authUri))) {
-      nonce.calibrate(serverTimestamp, clientTimestamp, method, url)
+      nonce.calibrate(clientTimestamp, serverTimestamp, method, url)
     }
   }
 
   nonce.calibrate = function (clientTimestamp, serverTimestamp) {
     if (clientTimestamp && serverTimestamp) {
-      offset = serverTimestamp - clientTimestamp
+      offset =  clientTimestamp - serverTimestamp
       if (nonce.logging) util.log(Date.now(), 'Nonce offset:', offset, 'clientTimestamp:', clientTimestamp, 'serverTimestamp:', serverTimestamp)
     }
   }

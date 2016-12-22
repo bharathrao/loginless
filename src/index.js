@@ -8,7 +8,7 @@ function ll(baseurl, authurl, network, errorHandler) {
 
   var nonce = loginless.nonce = require('./nonce')(authurl)
   var Rest = loginless.rest = require('./Rest')(baseurl, loginless, nonce, crypto)
-  loginless.socket = require('./socket')(loginless, nonce, crypto, errorHandler)
+  loginless.socket = require('./socket')(loginless, baseurl, nonce, crypto, errorHandler)
   
   var account, loginPromise
   var userPrivateKey

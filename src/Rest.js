@@ -23,10 +23,9 @@ module.exports = function (baseuri, loginless, nonce, crypto) {
   function rest(method, url, headers, data, beforeSend, retry) {
     beforeSend  = beforeSend || REST.beforeSend
     var updated = concat(headers, beforeSend(method, url, data))
-    var current = Date.now()
     return methodMap[method](baseuri + url, updated, data)
       .then(function (result) {
-        nonce.calibrateREST(restjs.getHeaderValue(result.headers, 'request-received'), current, method, url)
+        nonce.calibrateREST(Date.now(), restjs.getHeaderValue(result.headers, 'server-time'), method, url)
         return result.body
       })
       .catch(function (e) {
