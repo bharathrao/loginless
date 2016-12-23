@@ -1,46 +1,56 @@
 module.exports = function (loginless, baseUrl, nonce, crypto, errorHandler) {
-  var util     = require('util')
-  var cache    = require("./cache.core")()
-  var io       = require('socket.io-client')
-  var sock     = io(baseUrl, { rejectUnauthorized: true });
-  sock.logging = false
+  var util   = require('util')
+  var cache  = require("./cache.core")()
+  var io     = require('socket.io-client')
+  var affirm = require('affirm.js')
+  var socket     = io(baseUrl, { rejectUnauthorized: true });
+  socket.logging = false
 
-  sock.send = function (method, uri, headers, body, params, retry) {
+  socket.send = function (request) {
+    var method  = request.method
+    var uri     = request.uri
+    var headers = request.headers || {}
+    var body    = request.body
+    var params  = request.params || {}
+    var retry   = request.retry
+    affirm(typeof method === 'string', 'Invalid method')
+    affirm(typeof uri === 'string', 'Invalid uri')
+
     params                = params || {}
     var account           = loginless.getAccount()
     var requestNonce      = nonce.getNonce()
     var authorization     = crypto.getAuthorization(account.userid, account.secret, method, uri, { body: body, params: params }, requestNonce)
     headers               = headers || {}
     headers.authorization = authorization
-    headers.nonce = requestNonce
+    headers.nonce         = requestNonce
 
-    if (sock.logging) util.log(Date.now(), "sending on socket", method, uri)
+    if (socket.logging) util.log(Date.now(), "sending on socket", method, uri)
     var data = { headers: headers, method: method, uri: uri, params: params, body: body, retry: retry }
     cache.put(authorization, data)
-    sock.emit(method + " " + uri, data)
+    socket.emit(method + " " + uri, data)
   }
 
-  sock.onAuthError = function (message) {
+  socket.onAuthError = function (message) {
     if (message.data.retry) return errorHandler && errorHandler(message.error)
     nonce.calibrate(Date.now(), message['server-time'])
     var auth = message.data.headers.authorization
     var data = cache.get(auth)
-    sock.send(data.method, data.uri, data.headers, data.body, data.params, true)
+    socket.send({ method: data.method, uri: data.uri, headers: data.headers, body: data.body, params: data.params, retry: true })
   }
 
-  sock.register = function () {
+  socket.register = function () {
     var account = loginless.getAccount()
-    sock.send("GET", "/register", {}, { userid: account.userid, publicKey: account.userPublicKey }, {})
+    socket.send({ method: "GET", uri: "/register", body: { userid: account.userid, publicKey: account.userPublicKey }})
   }
 
-  sock.unregister = function () {
+  socket.unregister = function () {
     var account = loginless.getAccount()
-    sock.send("GET", "/unregister", {}, { userid: account.userid, publicKey: account.userPublicKey }, {})
+    socket.send({ method: "GET", uri: "/unregister", body: { userid: account.userid, publicKey: account.userPublicKey }})
   }
 
-  sock.on('server-time', function (serverTime) {
+  socket.on('server-time', function (serverTime) {
     nonce.calibrate(Date.now(), serverTime)
   })
 
-  return sock
+  return socket
 }
