@@ -11,16 +11,18 @@ describe('loginless tests', function () {
       })
     })
   })
-  describe('shared secret', function () {
+
+  describe('Peers should arrive at shared secret', function () {
     fixtures.sharedSecret.forEach(function (test, i) {
       it(i + ' ' + test.result, function () {
-        var shared = ll.getSharedSecret(test.privateKey1, test.publicKey2, 'testnet')
-        expect(shared).to.be.eql(test.result)
-        shared = ll.getSharedSecret(test.privateKey2, test.publicKey1, 'testnet')
-        expect(shared).to.be.eql(test.result)
+        var shared1 = ll.getSharedSecret(test.privateKey1, test.publicKey2, 'testnet')
+        var shared2 = ll.getSharedSecret(test.privateKey2, test.publicKey1, 'testnet')
+        expect(shared1).to.be.eql(test.result)
+        expect(shared2).to.be.eql(test.result)
       })
     })
   })
+
   describe('get Authorization', function () {
     fixtures.auth.forEach(function (test, i) {
       it(i + ' ' + test.result, function () {
@@ -28,5 +30,40 @@ describe('loginless tests', function () {
         expect(auth).to.be.eql(test.result)
       })
     })
+  })
+
+  describe('Decrypt should reverse encrypt', function() {
+    fixtures.encrypt.forEach(function(test, i) {
+      it(i + ' ' + test.cipher, function() {
+        var encrypted = ll.encrypt(test.secret, test.plain)
+        var decrypted = ll.decrypt(test.secret, encrypted)
+        expect(test.cipher).to.equal(encrypted)
+        expect(test.plain).to.be(decrypted)
+        expect(test.plain).not.to.be(encrypted)
+      })
+    })
+  })
+
+  describe('Requests with proper Authorization should pass', function() {
+    fixtures.auth.forEach(function(test, i) {
+      it(i + ' ' + test.result, function() {
+          ll.authenticate({ userid: test.userId, secret: test.secret}, test.result, test.method, test.uri, test.body, test.nonce, test.received)
+      })
+    })
+  })
+
+  it('Requests without Authorization should fail', function() {
+    var test = fixtures.noauthfailure
+    expect(ll.authenticate).withArgs({ userid: test.userId, secret: test.secret}, test.result, test.method, test.uri, test.body, test.nonce, test.received).to.throwError()
+  })
+
+  it('Requests with improper Authorization should fail', function() {
+    var test = fixtures.badauthfailure
+    expect(ll.authenticate).withArgs({ userid: test.userId, secret: test.secret}, test.result, test.method, test.uri, test.body, test.nonce, test.received).to.throwError()
+  })
+
+  it('Requests that are outside nonce tolerance should fail', function() {
+    var test = fixtures.noncefailure
+    expect(ll.authenticate).withArgs({ userid: test.userId, secret: test.secret}, test.result, test.method, test.uri, test.body, test.nonce, test.received).to.throwError()
   })
 })

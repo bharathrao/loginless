@@ -77,7 +77,7 @@ module.exports = (function () {
 
     var diff                   = receivedTime - nonce
     var nonceWithInGracePeriod = Math.abs(receivedTime - nonce) <= (nonceLatencyTolerance || defaultLatencyTolerance) * 1000
-    affirm(nonceWithInGracePeriod, 'Authentication failed. Nonce ' + nonce + 'stale by ' + diff + 'ms', 401)
+    affirm(nonceWithInGracePeriod, 'Authentication failed. Nonce ' + nonce + ' stale by ' + diff + 'ms', 401)
   }
 
   function badSignature(auth, err) {

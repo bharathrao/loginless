@@ -14,8 +14,8 @@ module.exports = function (baseuri, loginless, nonce, crypto) {
     var account  = loginless.getAccount()
     var auth     = crypto.getAuthorization(account.userid, account.secret, method, url, data, reqNonce)
     return {
-      "content-type" : "application/json",
-      "nonce"        : reqNonce,
+      "Content-Type" : "application/json",
+      "Nonce"        : reqNonce,
       "Authorization": auth
     }
   }

@@ -117,6 +117,17 @@
   ],
   "auth"        : [
     {
+      "userId": "muWgXDewuDvSvKp1J1fTjD64Gh4zVZWkD5",
+      "method": "POST",
+      "uri"   : "/api/greetins",
+      "body"  : {
+        "key"  : "key",
+        "value": "value"
+      },
+      "nonce" : 1452154049511,
+      "received": 1452154049599,
+      "result": "HMAC muWgXDewuDvSvKp1J1fTjD64Gh4zVZWkD5"
+    }, {
       "secret": "3f7b48126bda3f9a19c3da04d562391405520ba30e4692ca77e421f2809d0af1",
       "userId": "muWgXDewuDvSvKp1J1fTjD64Gh4zVZWkD5",
       "method": "POST",
@@ -126,6 +137,7 @@
         "value": "value"
       },
       "nonce" : 1452154049511,
+      "received": 1452154049599,
       "result": "HMAC muWgXDewuDvSvKp1J1fTjD64Gh4zVZWkD5:3495282edba8bf8d5ad87ebfece71b65fb7cbf454237346c8bc6c384d45faea0"
     }, {
       "secret": "db7d8ff9712a032e29d25db1c414f3a643f9620279fd8103c7af7d7401e0b884",
@@ -137,6 +149,7 @@
         "value": "value"
       },
       "nonce" : 1452154049730,
+      "received": 1452154049799,
       "result": "HMAC mwUsFf47NocdCSm2MhCPzqqVUXKwnUBMRd:b7ecd493d4a4e7e36951e204fa9ce6e85fb0a42912a09ae69d984f5bcc458bd6"
     }, {
       "secret": "d3f53c7d9154b92f9c011289c06033b138a2dff34cfbb879447199891a0c6640",
@@ -148,6 +161,7 @@
         "value": "value"
       },
       "nonce" : 1452154049858,
+      "received": 1452154049899,
       "result": "HMAC mtB2cGnSfpsffUEvVynJsNfMfGwrLCVBBU:09dd7f93a585b3caaed100da6e862ce7a2757087ef695bd44b920f13dd913acd"
     }, {
       "secret": "24c7ed3ee960a15b3933e3e1be71e75ab6a900ef25e991762e86d5b81da048ef",
@@ -159,6 +173,7 @@
         "value": "value"
       },
       "nonce" : 1452154049537,
+      "received": 1452154049599,
       "result": "HMAC n16TegQvTbTU5Bitbgpp6aVTEWcrdccBsD:236cd6c1f7dd35c418d489679f82d14dd229f4824fe26f5cae081d53931d1e8c"
     }, {
       "secret": "10baa89605edc629a1ea6ce7cc5697ab8a2ab1190a035daf9e9906749eb59c52",
@@ -170,6 +185,7 @@
         "value": "value"
       },
       "nonce" : 1452154049325,
+      "received": 1452154049399,
       "result": "HMAC mtshFv2VqnQDGY271QjHrsPqsX9znEVjU6:3ea2f2c544bf5fac3a696d8f6ff26fd2ece2d69891bbdc121a5e74a9edf54ecc"
     }, {
       "secret": "382e46bcae9a25d15045c18b810d695caf9935ff4ab5c2ef261fccc10a9aa2db",
@@ -181,6 +197,7 @@
         "value": "value"
       },
       "nonce" : 1452154049535,
+      "received": 1452154049599,
       "result": "HMAC mrr7dQBA6gWJhxCUZzN9LpxCmi1p4jZATb:6ce967563a62bd4cab1f51992def244e357f275d439726f073ee7bb0cc858a7b"
     }, {
       "secret": "95457049f23c3a6584e97c8f7c0aefde5062c9bc08d9a3ba54d2ad8dc8da5c07",
@@ -192,6 +209,7 @@
         "value": "value"
       },
       "nonce" : 1452154049018,
+      "received": 1452154049099,
       "result": "HMAC mq3rae5x4jpngweE55AcbsJjsTmtvxZRTx:ed96433f7f583d4c26713976a9e9eaa8bdc2aefc6404db04a620d2b9d055646c"
     }, {
       "secret": "e7155b4581f9eaacd6eef04992918e093b27780758fbbc1efbf1be999a00075c",
@@ -203,6 +221,7 @@
         "value": "value"
       },
       "nonce" : 1452154049248,
+      "received": 1452154049299,
       "result": "HMAC n1NMj4hE5TKmfWBVNSGscwXXFGk2xApnqN:e9a1790a3efc66b546122d065d8b9c9dfda8b471ea71d9565c74149bc433b4a5"
     }, {
       "secret": "6ca07f450522779223ac393b2445e894a676b995d19d4f3f9445a4c3a9a8d4ae",
@@ -214,6 +233,7 @@
         "value": "value"
       },
       "nonce" : 1452154049261,
+      "received": 1452154049299,
       "result": "HMAC mta1PRBbzWPu51mDi4Zvgf26a5RamHodQ8:dbaff86535ebac30d8459cbc9f62759c592c600bcafbd61b3fa5ec5c8f7c80d6"
     }, {
       "secret": "45fab09c0d30361914ff4a4e741c4b9c55f4335babcc48a528833c2d8a9bb783",
@@ -225,7 +245,65 @@
         "value": "value"
       },
       "nonce" : 1452154049431,
+      "received": 1452154049499,
       "result": "HMAC mqWhbGsKWstL5i6k6eYFpsP6JzN29vys36:37be5d17c78e10fbeeec2f3c42378bb9b87a306f03216fb6820a621e6a5d6822"
     }
+  ],
+  "noauthfailure":
+        {
+          "secret": "3f7b48126bda3f9a19c3da04d562391405520ba30e4692ca77e421f2809d0af1",
+          "userId": "muWgXDewuDvSvKp1J1fTjD64Gh4zVZWkD5",
+          "method": "POST",
+          "uri"   : "/api/greetins",
+          "body"  : {
+            "key"  : "key",
+            "value": "value"
+          },
+          "nonce" : 1452154049511,
+          "received": 1452154049599,
+          "result": "HMAC muWgXDewuDvSvKp1J1fTjD64Gh4zVZWkD5"
+        }
+  ,
+  "badauthfailure":
+        {
+          "secret": "3f7b48126bda3f9a19c3da04d562391405520ba30e4692ca77e421f2809d0af1",
+          "userId": "muWgXDewuDvSvKp1J1fTjD64Gh4zVZWkD5",
+          "method": "POST",
+          "uri"   : "/api/greetins",
+          "body"  : {
+            "key"  : "key",
+            "value": "value"
+          },
+          "nonce" : 1452154049511,
+          "received": 1452154049599,
+          "result": "HMAC muWgXDewuDvSvKp1J1fTjD64Gh4zVZWkD5:3495282edba8bf8d5ad87ebfece71b65fb7cbf454237346c8bc6c384d45fae00"
+        }
+  ,
+  "noncefailure":
+        {
+          "secret": "3f7b48126bda3f9a19c3da04d562391405520ba30e4692ca77e421f2809d0af1",
+          "userId": "muWgXDewuDvSvKp1J1fTjD64Gh4zVZWkD5",
+          "method": "POST",
+          "uri"   : "/api/greetins",
+          "body"  : {
+            "key"  : "key",
+            "value": "value"
+          },
+          "nonce" : 1452154049511,
+          "received": 1472154049599,
+          "result": "HMAC muWgXDewuDvSvKp1J1fTjD64Gh4zVZWkD5:3495282edba8bf8d5ad87ebfece71b65fb7cbf454237346c8bc6c384d45faea0"
+        }
+  ,
+  "encrypt" : [
+    { "secret": "wajDlSYrlEQ9XHaW7o65", "plain": "GrExWSTknfZ3RfFM4hyL", "cipher": "kEWAZ8Qe6diVr/3/y3LjcY7NS9c=" },
+    { "secret": "zvIF46lzesDnPOiCQ2Ay", "plain": "EOprUooRfYAvmzSS89nd", "cipher": "yoYMqyaMopViPxUpg4EPfxyNsDc=" },
+    { "secret": "QsAroFTJHMedWyYcnDPP", "plain": "GEN8poSvbHRbmMdrXBxl", "cipher": "jIz3SFV6dGL8ZaD5RO07KySTU/w=" },
+    { "secret": "gGbpuEiLwuJbyn0c3JKm", "plain": "e4xLqPSaFh0NID3ABqQC", "cipher": "vBvVE761YW1ahV3qUgMGP+MpYc8=" },
+    { "secret": "2WcimKnQK5JFHPwg5Ekx", "plain": "GkeVpPx4JTrxUBK5bcBc", "cipher": "dP1tUxtC3SqqqwV9PWU8N7d2K4Y=" },
+    { "secret": "YlVZUfr04aBKo9KPoxiP", "plain": "jM2H958CtQNTCngEWW6q", "cipher": "gzGt+wVPbCAXCfcAYimtnkB5Kt4=" },
+    { "secret": "errejexK6RSVx9letWxG", "plain": "LPxShYGtgEwpc6p6pKHi", "cipher": "UjSmOjazUhHQgOtx22/gI/4wrGM=" },
+    { "secret": "chD88l1uvWaTqANhalO5", "plain": "V84H08auZP4f6KtrvXR5", "cipher": "u1ALzIAV4sLKyAKp/u0h/dbx2ig=" },
+    { "secret": "6Zpd6EXOLANUzj0sAYQz", "plain": "dCPsv0y2e2SmYSIZ73EB", "cipher": "idaGkaQdD/HwsMg3LTeo2lr5mKc=" },
+    { "secret": "W5dRgpOzThwceHAxduGv", "plain": "ag9cKcOwahzxVhN01szH", "cipher": "nvntKecNOdebBOXT/rPAJm46Gzw=" }
   ]
 }
