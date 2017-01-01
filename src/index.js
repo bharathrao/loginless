@@ -9,7 +9,7 @@ function ll(baseurl, authurl, network, errorHandler) {
   var nonce = loginless.nonce = require('./nonce')(authurl)
   var Rest = loginless.rest = require('./Rest')(baseurl, loginless, nonce, crypto)
   loginless.socket = require('./socket')(loginless, baseurl, nonce, crypto, errorHandler)
-  
+
   var account, loginPromise
   var userPrivateKey
 
@@ -39,6 +39,7 @@ function ll(baseurl, authurl, network, errorHandler) {
   function logServerKey(action){
     util.log(Date.now(), "Successful:", action,  "server key. userid:", account.userid, "multisig:", account.accountid, "marginid:", account.serverAddress)
   }
+
   loginless.getAccount = function () {
     return account
   }
@@ -67,8 +68,8 @@ function ll(baseurl, authurl, network, errorHandler) {
 
   function beforeSend(address) {
     return {
-      "content-type" : "application/json",
-      "nonce"        : nonce.getNonce(),
+      "Content-Type" : "application/json",
+      "Nonce"        : nonce.getNonce(),
       "Authorization": crypto.getAuthorization(address)
     }
   }
