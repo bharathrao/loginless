@@ -21,8 +21,8 @@ module.exports = function (loginless, baseUrl, nonce, crypto, errorHandler) {
     var requestNonce      = nonce.getNonce()
     var authorization     = crypto.getAuthorization(account.userid, account.secret, method, uri, { body: body, params: params }, requestNonce)
     headers               = headers || {}
-    headers.authorization = authorization
-    headers.nonce         = requestNonce
+    headers.Authorization = authorization
+    headers.Nonce         = requestNonce
 
     if (socket.logging) util.log(Date.now(), "sending on socket", method, uri)
     var data = { headers: headers, method: method, uri: uri, params: params, body: body, retry: retry }
@@ -33,7 +33,7 @@ module.exports = function (loginless, baseUrl, nonce, crypto, errorHandler) {
   socket.onAuthError = function (message) {
     if (message.data.retry) return errorHandler && errorHandler(message.error)
     nonce.calibrate(Date.now(), message['server-time'])
-    var auth = message.data.headers.authorization
+    var auth = message.data.headers.Authorization
     var data = cache.get(auth)
     socket.send({ method: data.method, uri: data.uri, headers: data.headers, body: data.body, params: data.params, retry: true })
   }
