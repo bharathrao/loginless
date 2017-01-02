@@ -1,5 +1,5 @@
 var expect = require('expect.js')
-var Socket = require('../src/socket')
+var Socket = require('../src/Socket')
 var nonce  = require('../src/nonce')
 var Account   = require('../src/Account')
 var sinon  = require('sinon')
