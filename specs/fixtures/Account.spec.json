@@ -1,0 +1,22 @@
+{
+  "peer1" : {
+    "address": "msZWAC7xhte1ranSXgWVmatxm7tiBFzhof",
+    "privateKey": "cQhxRVxkBpTrwUHZmnv5M7ZvPcgp4cZ8csnenAfFLyoFgEVvN8yy",
+    "publicKey": "02a40fd40b385908bafa7d172e7d43b4198715aa7aa50f179ff42ca2377e4caad7"
+  },
+  "peer2" : {
+    "address": "n2wG3dnDH1FngNGfozFcfA1TZTDHDdAYRD",
+    "privateKey": "cRR2wSqGYBn8GtN5DQCb6mD8T1BBHRuLBzQXxB1bkUjm3oQnkYTe",
+    "publicKey": "020a5a3a6450924a5571dfa52d00dc3f8d9917030d93d6b166a5784461bfb1e276"
+  },
+  "account": {
+    "accountid": "2NEmYU7U5C2B8WMP7AceBV7KNPTip7C1dY6",
+    "redeem": "5221020a5a3a6450924a5571dfa52d00dc3f8d9917030d93d6b166a5784461bfb1e2762102a40fd40b385908bafa7d172e7d43b4198715aa7aa50f179ff42ca2377e4caad752ae",
+    "secret": "24db7b7262a102d776dac56950a00ab82848f285c057246fb403b47225359d4d",
+    "serverAddress": "n2wG3dnDH1FngNGfozFcfA1TZTDHDdAYRD",
+    "serverPublicKey": "020a5a3a6450924a5571dfa52d00dc3f8d9917030d93d6b166a5784461bfb1e276",
+    "userPrivateKey": "cQhxRVxkBpTrwUHZmnv5M7ZvPcgp4cZ8csnenAfFLyoFgEVvN8yy",
+    "userPublicKey": "02a40fd40b385908bafa7d172e7d43b4198715aa7aa50f179ff42ca2377e4caad7",
+    "userid": "msZWAC7xhte1ranSXgWVmatxm7tiBFzhof"
+  }
+}
