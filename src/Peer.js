@@ -1,37 +1,23 @@
-var affirm = require('affirm.js')
-var crypto = require('./crypto')
+var affirm      = require('affirm.js')
+var bitcoinutil = require('bitcoinutil')
+var crypto      = require('./crypto')
 
-module.exports = function (user1PublicKey, network, user2PrivateKey) {
+module.exports = function (user1PublicKey, user2PrivateKey) {
   affirm(user1PublicKey, 'user1PublicKey must be present')
-  network = network || 'bitcoin'
-  affirm(network === 'bitcoin' || network === 'testnet', 'Only "bitcoin" and "testnet" supported')
-  var bitcoinutil      = require('bitcoinutil')(network)
-  user2PrivateKey      = user2PrivateKey || bitcoinutil.makeRandom().privateKey
+  affirm(user2PrivateKey, 'user2PrivateKey must be present')
+
+  var network = user2PrivateKey[0] == 'K' || user2PrivateKey[0] == 'L' ? 'bitcoin' : 'testnet'
+
   var peer             = {}
   peer.user2PrivateKey = user2PrivateKey
   peer.user2PublicKey  = bitcoinutil.getPublicKey(peer.user2PrivateKey)
   peer.user1PublicKey  = user1PublicKey
-  peer.user1Address    = bitcoinutil.toAddress(user1PublicKey)
+  peer.user1Address    = bitcoinutil.toAddress(user1PublicKey, network)
   var multisig         = bitcoinutil.getMultisigAddress(2, [peer.user2PublicKey, peer.user1PublicKey])
   peer.accountid       = multisig.address
   peer.redeem          = multisig.redeem
-  peer.user2Address    = bitcoinutil.toAddress(peer.user2PublicKey)
-  peer.secret          = crypto.getSharedSecret(user2PrivateKey, peer.user1PublicKey, network)
-
-  peer.getAccount = function() {
-    return {
-        userPrivateKey : peer.user2PrivateKey,
-        userPublicKey  : peer.user2PublicKey,
-        userid         : peer.user2Address,
-
-        serverPublicKey : peer.user1PublicKey,
-        serverAddress   : peer.user1Address,
-
-        accountid : peer.accountid,
-        redeem    : peer.redeem,
-        secret    : peer.secret
-    }
-  }
+  peer.user2Address    = bitcoinutil.toAddress(peer.user2PublicKey, network)
+  peer.secret          = crypto.getSharedSecret(user2PrivateKey, peer.user1PublicKey)
 
   return peer
 }

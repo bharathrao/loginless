@@ -1,84 +1,40 @@
-var crypto  = require('./crypto')
+var util    = require('util')
+var restjs  = require('rest.js')
 var Account = require('./Account')
-var util = require('util')
+var crypto  = require('./crypto')
+var Rest    = require('./Rest')
+var Socket  = require('./Socket')
 
-function ll(baseurl, authurl, network, errorHandler) {
+module.exports = function ll(baseurl) {
   var loginless   = {}
-  var bitcoinutil = require('bitcoinutil')(network)
+  var bitcoinutil = require('bitcoinutil')
+  var authUri     = loginless.authUri = '/auth'
 
-  var nonce = loginless.nonce = require('./nonce')(authurl)
-  var Rest = loginless.rest = require('./Rest')(baseurl, loginless, nonce, crypto)
-  loginless.socket = require('./socket')(loginless, baseurl, nonce, crypto, errorHandler)
+  loginless.registerKey = function (privateKeyWIF, registrationData) {
+    key           = bitcoinutil.addressFromPrivateKey(privateKeyWIF)
+    var signature = bitcoinutil.signMessage(key.privateKey, registrationData)
+    var headers   = { Authorization: crypto.getAuthorization(key.address) }
+    var regMesg   = [{ message: registrationData, signature: signature }]
+    return initLoginless(restjs.post(baseurl + '/' + authUri, headers, regMesg), key.privateKey)
+  }
 
-  var account, loginPromise
-  var userPrivateKey
+  loginless.getServerKey = function (privateKeyWIF) {
+    key      = bitcoinutil.addressFromPrivateKey(privateKeyWIF)
+    var auth = crypto.getAuthorization(key.address)
+    return initLoginless(restjs.get(baseurl + '/' + authUri + '/' + key.publicKey, { Authorization: auth }), key.privateKey)
+  }
 
-  loginless.createServerKey = function (privateKey, registrationData) {
-    privateKey    = bitcoinutil.addressFromPrivateKey(privateKey)
-    var signature = bitcoinutil.signMessage(privateKey.privateKey, registrationData)
-    loginPromise  = Rest.post(nonce.authUri, {},[{ message: registrationData, signature: signature }], beforeSend.bind(undefined, privateKey.address))
+  function initLoginless(serverPromise, privateKey) {
+    return serverPromise
       .then(function (meData) {
-        var loginData = createAccount(meData, privateKey, network)
-        logServerKey("CREATE")
-        return loginData
+        return account = Account(meData.body.serverPublicKey, privateKey)
       })
-    return loginPromise
-  }
-
-  loginless.getServerKey = function (privateKey) {
-    privateKey   = bitcoinutil.addressFromPrivateKey(privateKey)
-    loginPromise = Rest.get(nonce.authUri + privateKey.publicKey, {}, beforeSend.bind(undefined, privateKey.address))
-      .then(function (meData) {
-        var loginData = createAccount(meData, privateKey, network)
-        logServerKey("GET")
-        return loginData
+      .then(function (account) {
+        loginless.rest = Rest(baseurl, account)
+        loginless.socket = Socket(baseurl, account)
+        return account
       })
-    return loginPromise
-  }
-
-  function logServerKey(action){
-    util.log(Date.now(), "Successful:", action,  "server key. userid:", account.userid, "multisig:", account.accountid, "marginid:", account.serverAddress)
-  }
-
-  loginless.getAccount = function () {
-    return account
-  }
-
-  loginless.getPromise = function () {
-    return loginPromise
-  }
-
-  loginless.getUserPrivateKey = function () {
-    return userPrivateKey
-  }
-
-  loginless.setUserPrivateKey = function (privateKey) {
-    userPrivateKey = privateKey
-  }
-
-  loginless.delUserPrivateKey = function () {
-    userPrivateKey = undefined
-  }
-
-  function createAccount(loginData, privateKey, network) {
-    loginless.setUserPrivateKey(privateKey)
-    account = Account(loginData.serverPublicKey, network, privateKey.privateKey)
-    return loginData
-  }
-
-  function beforeSend(address) {
-    return {
-      "Content-Type" : "application/json",
-      "Nonce"        : nonce.getNonce(),
-      "Authorization": crypto.getAuthorization(address)
-    }
   }
 
   return loginless
 }
-
-ll.Account = Account
-ll.crypto  = crypto
-ll.Peer    = require('./Peer')
-
-module.exports = ll

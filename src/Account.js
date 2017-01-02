@@ -1,10 +1,11 @@
 var assert      = require('affirm.js')
 var Peer        = require("./Peer")
 
-module.exports  = function (serverPublicKey, network, userPrivateKey) {
-  assert(serverPublicKey, 'User: server public key not present');
+module.exports  = function (serverPublicKey, userPrivateKey) {
+  assert(serverPublicKey, 'Server public key is required');
+  assert(userPrivateKey, 'User private key is required')
   var account            = {}
-  var peer               = Peer(serverPublicKey, network, userPrivateKey)
+  var peer               = Peer(serverPublicKey, userPrivateKey)
 
   account.userPrivateKey = peer.user2PrivateKey
   account.userPublicKey  = peer.user2PublicKey

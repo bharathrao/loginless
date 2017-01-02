@@ -1,8 +1,11 @@
-module.exports = function (loginless, baseUrl, nonce, crypto, errorHandler) {
-  var util   = require('util')
-  var cache  = require("./cache.core")()
-  var io     = require('socket.io-client')
-  var affirm = require('affirm.js')
+var util   = require('util')
+var io     = require('socket.io-client')
+var affirm = require('affirm.js')
+var cache  = require('ephemeral-cache')()
+var crypto = require('./crypto')
+var nonce  = require('./nonce')
+
+module.exports = function (baseUrl, account, errorHandler) {
   var socket     = io(baseUrl, { rejectUnauthorized: true });
   socket.logging = false
 
@@ -17,7 +20,6 @@ module.exports = function (loginless, baseUrl, nonce, crypto, errorHandler) {
     affirm(typeof uri === 'string', 'Invalid uri')
 
     params                = params || {}
-    var account           = loginless.getAccount()
     var requestNonce      = nonce.getNonce()
     var authorization     = crypto.getAuthorization(account.userid, account.secret, method, uri, { body: body, params: params }, requestNonce)
     headers               = headers || {}

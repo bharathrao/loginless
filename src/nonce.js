@@ -1,27 +1,35 @@
-module.exports = function (authUri) {
-  var util = require('util')
-  var offset     = 0
+var util   = require('util')
+var affirm = require('affirm.js')
+
+module.exports = (function () {
   var nonce      = {}
+  nonce.offset   = undefined
   nonce.forNonce = { POST: true, PUT: true, DELETE: true, OPTIONS: true, TRACE: true }
   nonce.logging  = false
-  nonce.authUri  = authUri
 
   nonce.calibrateREST = function (clientTimestamp, serverTimestamp, method, url) {
-    if (nonce.forNonce[method] || (url && url.startsWith(nonce.authUri))) {
+    if (nonce.forNonce[method] || nonce.offset === undefined)
       nonce.calibrate(clientTimestamp, serverTimestamp, method, url)
-    }
   }
 
   nonce.calibrate = function (clientTimestamp, serverTimestamp) {
-    if (clientTimestamp && serverTimestamp) {
-      offset =  clientTimestamp - serverTimestamp
-      if (nonce.logging) util.log(Date.now(), 'Nonce offset:', offset, 'clientTimestamp:', clientTimestamp, 'serverTimestamp:', serverTimestamp)
-    }
+    if(!clientTimestamp || !serverTimestamp) return
+    nonce.offset =  clientTimestamp - serverTimestamp
+    log(clientTimestamp, serverTimestamp)
   }
 
   nonce.getNonce = function () {
-    return Date.now() + offset
+    return Date.now() - ( nonce.offset || 0)
+  }
+
+  nonce.reset = function() {
+    nonce.offset = undefined
+  }
+
+  function log(clientTimestamp, serverTimestamp) {
+    if(!nonce.logging) return
+    util.log(Date.now(), 'Nonce offset:', nonce.offset, 'clientTimestamp:', clientTimestamp, 'serverTimestamp:', serverTimestamp)
   }
 
   return nonce
-}
+})()

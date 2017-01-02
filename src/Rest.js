@@ -1,6 +1,9 @@
-module.exports = function (baseuri, loginless, nonce, crypto) {
+var restjs    = require('rest.js')
+var crypto    = require('./crypto')
+var nonce     = require('./nonce')
+
+module.exports = function (baseuri, account) {
   var REST      = {}
-  var restjs    = require('rest.js')
   var methodMap = {
     GET    : restjs.get,
     POST   : restjs.post,
@@ -11,7 +14,6 @@ module.exports = function (baseuri, loginless, nonce, crypto) {
 
   REST.beforeSend = function (method, url, data) {
     var reqNonce = nonce.getNonce()
-    var account  = loginless.getAccount()
     var auth     = crypto.getAuthorization(account.userid, account.secret, method, url, data, reqNonce)
     return {
       "Content-Type" : "application/json",

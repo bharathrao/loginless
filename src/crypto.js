@@ -6,19 +6,10 @@ module.exports = (function () {
   var ll = {}
   var defaultLatencyTolerance = 10
 
-  ll.getAuthorization = function (userId, secret, method, uri, body, nonce) {
-    affirm(userId, 'Need userId to generate authorization token')
-
-    if (!secret) return 'HMAC ' + userId
-    var message = JSON.stringify({ method: method, uri: uri, body: body, nonce: nonce })
-    var hmac    = crypto.createHmac('sha256', new Buffer(secret, 'hex'))
-    hmac.update(message)
-    return 'HMAC ' + userId + ":" + hmac.digest('hex')
-  }
-
-  ll.getSharedSecret = function (myPrivateKeyWif, theirPublicKeyHex, network) {
+  ll.getSharedSecret = function (myPrivateKeyWif, theirPublicKeyHex) {
     affirm(myPrivateKeyWif, 'Need privateKey for computing shared secret')
     affirm(theirPublicKeyHex, 'Need other party publicKey for computing shared secret')
+    var network = myPrivateKeyWif[0] == 'K' || myPrivateKeyWif[0] == 'L' ? 'bitcoin' : 'testnet'
     network = network || 'bitcoin'
 
     var myEcdhKey = getEcdhKey(bitcoin.ECPair.fromWIF(myPrivateKeyWif, bitcoin.networks[network]))
@@ -58,6 +49,16 @@ module.exports = (function () {
     var dec      = decipher.update(text, 'base64', 'utf8')
     dec += decipher.final('utf8');
     return dec;
+  }
+
+  ll.getAuthorization = function (userId, secret, method, uri, body, nonce) {
+    affirm(userId, 'Need userId to generate authorization token')
+
+    if (!secret) return 'HMAC ' + userId
+    var message = JSON.stringify({ method: method, uri: uri, body: body, nonce: nonce })
+    var hmac    = crypto.createHmac('sha256', new Buffer(secret, 'hex'))
+    hmac.update(message)
+    return 'HMAC ' + userId + ":" + hmac.digest('hex')
   }
 
   ll.authenticate = function(user, auth, method, uri, body, nonce, receivedTime, nonceLatencyTolerance) {
