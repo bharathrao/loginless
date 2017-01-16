@@ -41,13 +41,11 @@ module.exports = function (baseUrl, account, errorHandler) {
   }
 
   socket.register = function () {
-    var account = loginless.getAccount()
-    socket.send({ method: "GET", uri: "/register", body: { userid: account.userid, publicKey: account.userPublicKey }})
+    socket.send({ method: "GET", uri: "/register", body: { userid: account.userid, publicKey: account.userPublicKey } })
   }
 
   socket.unregister = function () {
-    var account = loginless.getAccount()
-    socket.send({ method: "GET", uri: "/unregister", body: { userid: account.userid, publicKey: account.userPublicKey }})
+    socket.send({ method: "GET", uri: "/unregister", body: { userid: account.userid, publicKey: account.userPublicKey } })
   }
 
   socket.on('server-time', function (serverTime) {

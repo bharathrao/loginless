@@ -3,20 +3,17 @@
 ## install 
 
 ```
-npm install socket.io-client loginless --save
+npm install loginless --save
 ```
 
 ## usage
 
 ```javascript
-// create socket to be used by loginless module.
-var socket = require("socket.io-client")("https://server-url", { rejectUnauthorized: true })
-
 // loginless instance
-var loginless = require("loginless")("https://server-url", "/api/auth/", 'livenet', util.log.bind(util))
+var loginless = require("loginless")("https://server-url", "/api/auth/")
 
 // create a user (private key is used to generate public key and shared secret, but is neber send to server)
-loginless.createServerKey(tradingAddress.privateKey, registrationMessage).then(function(resverResponse){
+loginless.registerKey(tradingAddress.privateKey, registrationMessage).then(function(resverResponse){
     /*server response example
         {"userid":"15vYTEVDwb1ksbiWyV35hc2eZdPrMvKrgD","serverPublicKey":"03a50742970ff626016ed86a3572e7d57c9efbe635a3db3e9752cbb3b55ceefcf1"} 
     */
@@ -28,6 +25,15 @@ loginless.getServerKey(privKey).then(function(serverResponse){
     {"userid":"15vYTEVDwb1ksbiWyV35hc2eZdPrMvKrgD","serverPublicKey":"03a50742970ff626016ed86a3572e7d57c9efbe635a3db3e9752cbb3b55ceefcf1"} 
    */
  })
+
+ //Account information
+ loginless.account
+
+ //rest object to make rest calls
+ loginless.rest
+
+ //socket object
+ loginless.socket
  
 ```
 

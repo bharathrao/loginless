@@ -14,8 +14,8 @@ describe('Loginless', function() {
       return bluebird.resolve({body: serverPublicKey})
     })
     var ll = loginless('http://localhost', 'testnet')
-    var account = yield ll.registerKey('cQhxRVxkBpTrwUHZmnv5M7ZvPcgp4cZ8csnenAfFLyoFgEVvN8yy', '{reg: true}')
-    expect(account.serverPublicKey).to.eql(serverPublicKey.serverPublicKey)
+    yield ll.registerKey('cQhxRVxkBpTrwUHZmnv5M7ZvPcgp4cZ8csnenAfFLyoFgEVvN8yy', '{reg: true}')
+    expect(ll.account.serverPublicKey).to.eql(serverPublicKey.serverPublicKey)
     stub.restore()
   })
 
@@ -26,8 +26,8 @@ describe('Loginless', function() {
       return bluebird.resolve({body: serverPublicKey})
     })
     var ll = loginless('http://localhost', 'testnet')
-    var account = yield ll.getServerKey('cQhxRVxkBpTrwUHZmnv5M7ZvPcgp4cZ8csnenAfFLyoFgEVvN8yy')
-    expect(account.serverPublicKey).to.eql(serverPublicKey.serverPublicKey)
+    yield ll.getServerKey('cQhxRVxkBpTrwUHZmnv5M7ZvPcgp4cZ8csnenAfFLyoFgEVvN8yy')
+    expect(ll.account.serverPublicKey).to.eql(serverPublicKey.serverPublicKey)
     stub.restore()
   })
 
@@ -38,7 +38,7 @@ describe('Loginless', function() {
       return bluebird.resolve({body: serverPublicKey})
     })
     var ll = loginless('http://localhost', 'testnet')
-    var account = yield ll.getServerKey('cQhxRVxkBpTrwUHZmnv5M7ZvPcgp4cZ8csnenAfFLyoFgEVvN8yy')
+    yield ll.getServerKey('cQhxRVxkBpTrwUHZmnv5M7ZvPcgp4cZ8csnenAfFLyoFgEVvN8yy')
     var stub2 = sinon.stub(ll.socket, 'emit', function() {
       spy()
     })
