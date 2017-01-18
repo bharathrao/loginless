@@ -16,8 +16,8 @@ module.exports = function ll(origin, apiPath) {
     var key       = bitcoinutil.addressFromPrivateKey(privateKeyWIF)
     var signature = bitcoinutil.signMessage(key.privateKey, registrationData)
     var regMesg   = [{ message: registrationData, signature: signature }]
-    let authUrl = baseurl + authUri
-    let headers = getHeaders(crypto.getAuthorization(key.address))
+    var authUrl = baseurl + authUri
+    var headers = getHeaders(crypto.getAuthorization(key.address))
     return initLoginless(restjs.post(authUrl, headers, regMesg), key.privateKey)
   }
 
@@ -25,8 +25,8 @@ module.exports = function ll(origin, apiPath) {
     affirm(privateKeyWIF, 'Private key missing')
     var key  = bitcoinutil.addressFromPrivateKey(privateKeyWIF)
     var auth = crypto.getAuthorization(key.address)
-    let authUrl = baseurl + authUri + '/' + key.publicKey
-    let headers = getHeaders(auth)
+    var authUrl = baseurl + authUri + '/' + key.publicKey
+    var headers = getHeaders(auth)
     return initLoginless(restjs.get(authUrl, headers), key.privateKey)
   }
 
