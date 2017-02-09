@@ -29,4 +29,21 @@ describe('Loginless Socket', function() {
     socket.onAuthError({ data: { method: 'GET', uri: '/', retry: false, headers: { Authorization: auth } }})
     stub.restore()
   })
+
+  it('should ignore invalid server message', function() {
+    var auth
+    var stub = sinon.stub(socket, 'emit', function(topic, message) {
+      expect(auth = message.headers.Authorization).to.be.ok()
+      expect(message.headers.Nonce).to.be.ok()
+    })
+    expect(socket.onAuthError).to.not.throwException()
+    expect(socket.onAuthError.bind(socket, {})).to.not.throwException()
+    expect(socket.onAuthError.bind(socket, {data:{}})).to.not.throwException()
+    expect(socket.onAuthError.bind(socket, {data:{headers:{}}})).to.not.throwException()
+    expect(socket.onAuthError.bind(socket, {data:{headers:{Authorization:true}}})).to.not.throwException()
+  })
+
+  it('should ignore expired/missing authentication errors', function() {
+
+  })
 })
