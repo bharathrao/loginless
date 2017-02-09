@@ -1,6 +1,6 @@
-var restjs    = require('rest.js')
-var crypto    = require('./crypto')
-var nonce     = require('./nonce')
+var restjs = require('rest.js')
+var crypto = require('./crypto')
+var nonce  = require('./nonce')
 
 module.exports = function (baseuri, account) {
   var REST      = {}
@@ -9,7 +9,8 @@ module.exports = function (baseuri, account) {
     POST   : restjs.post,
     DELETE : restjs.del,
     PUT    : restjs.put,
-    OPTIONS: restjs.options
+    OPTIONS: restjs.options,
+    PATCH  : restjs.patch
   }
 
   REST.beforeSend = function (method, url, data) {
@@ -68,6 +69,10 @@ module.exports = function (baseuri, account) {
 
   REST.del = function (url, headers, beforeSend) {
     return rest("DELETE", url, headers, undefined, beforeSend)
+  }
+
+  REST.patch = function (url, headers, data, beforeSend) {
+    return rest("PATCH", url, headers, data, beforeSend)
   }
 
   return REST
