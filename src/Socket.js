@@ -39,7 +39,7 @@ module.exports = function (baseUrl, account, errorHandler) {
   socket.onAuthError = function (message) {
     if(!validMessage(message)) return console.log('*** WARNING: Ignoring invalid server message: ', message)
     if (message.data.retry) return errorHandler && errorHandler(message.error)
-    nonce.calibrate(Date.now(), message['server-time'])
+    nonce.calibrate(Date.now(), message['server_time'])
     var auth = message.data.headers.Authorization
     var data = cache.get(auth)
     if(!data) return console.log('*** WARNING: Skipping retry for invalid Authorization', auth)
@@ -54,7 +54,7 @@ module.exports = function (baseUrl, account, errorHandler) {
     socket.send({ method: "GET", uri: "/unregister", body: { userid: account.userid, publicKey: account.userPublicKey } })
   }
 
-  socket.on('server-time', function (serverTime) {
+  socket.on('server_time', function (serverTime) {
     nonce.calibrate(Date.now(), serverTime)
   })
 

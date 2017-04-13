@@ -41,6 +41,7 @@ describe('Loginless Socket', function() {
     expect(socket.onAuthError.bind(socket, {data:{}})).to.not.throwException()
     expect(socket.onAuthError.bind(socket, {data:{headers:{}}})).to.not.throwException()
     expect(socket.onAuthError.bind(socket, {data:{headers:{Authorization:true}}})).to.not.throwException()
+    stub.restore()
   })
 
   it('should ignore expired/missing authentication errors', function() {
