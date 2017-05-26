@@ -1,17 +1,24 @@
-var util   = require('util')
-var io     = require('socket.io-client')
-var affirm = require('affirm.js')
-var cache  = require('ephemeral-cache')()
-var crypto = require('./crypto')
-var nonce  = require('./nonce')
+var util       = require('util')
+var io         = require('socket.io-client')
+var affirm     = require('affirm.js')
+var cache      = require('ephemeral-cache')()
+var crypto     = require('./crypto')
+var nonce      = require('./nonce')
+var _          = require('lodash')
 
 module.exports = function (baseUrl, account, errorHandler) {
   var socket     = io(baseUrl, { rejectUnauthorized: true });
   socket.logging = false
 
-  affirm(account.userid, 'Missing userid in account')
-  affirm(account.secret, 'Missing secret in account')
-  affirm(account.userPublicKey, 'Missing userPublicKey in account')
+  if (account) {
+    affirm(account.userid, 'Missing userid in account')
+    affirm(account.secret, 'Missing secret in account')
+    affirm(account.userPublicKey, 'Missing userPublicKey in account')
+  }
+
+  socket.reconnect = function () {
+    socket = _.assign(socket, io(baseUrl, { rejectUnauthorized: true }))
+  }
 
   socket.send = function (request) {
     var method  = request.method
@@ -25,7 +32,7 @@ module.exports = function (baseUrl, account, errorHandler) {
 
     params                = params || {}
     var requestNonce      = nonce.getNonce()
-    var authorization     = crypto.getAuthorization(account.userid, account.secret, method, uri, { body: body, params: params }, requestNonce)
+    var authorization     = account && crypto.getAuthorization(account.userid, account.secret, method, uri, { body: body, params: params }, requestNonce)
     headers               = headers || {}
     headers.Authorization = authorization
     headers.Nonce         = requestNonce
@@ -37,20 +44,23 @@ module.exports = function (baseUrl, account, errorHandler) {
   }
 
   socket.onAuthError = function (message) {
-    if(!validMessage(message)) return console.log('*** WARNING: Ignoring invalid server message: ', message)
+    if (!account) return
+    if (!validMessage(message)) return console.log('*** WARNING: Ignoring invalid server message: ', message)
     if (message.data.retry) return errorHandler && errorHandler(message.error)
     nonce.calibrate(Date.now(), message['server_time'])
     var auth = message.data.headers.Authorization
     var data = cache.get(auth)
-    if(!data) return console.log('*** WARNING: Skipping retry for invalid Authorization', auth)
+    if (!data) return console.log('*** WARNING: Skipping retry for invalid Authorization', auth)
     socket.send({ method: data.method, uri: data.uri, headers: data.headers, body: data.body, params: data.params, retry: true })
   }
 
   socket.register = function () {
+    affirm(account, "Register with server using registerKey or getServerKey")
     socket.send({ method: "GET", uri: "/register", body: { userid: account.userid, publicKey: account.userPublicKey } })
   }
 
   socket.unregister = function () {
+    affirm(account, "Register with server using registerKey or getServerKey")
     socket.send({ method: "GET", uri: "/unregister", body: { userid: account.userid, publicKey: account.userPublicKey } })
   }
 

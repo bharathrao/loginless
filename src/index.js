@@ -30,6 +30,11 @@ module.exports = function ll(origin, apiPath) {
     return initLoginless(restjs.get(authUrl, headers), key.privateKey)
   }
 
+  loginless.init = function(){
+    loginless.rest    = loginless.rest || Rest(baseurl)
+    loginless.socket  = loginless.socket || Socket(origin)
+  }
+
   function getHeaders(auth){
     return { Authorization: auth, 'Content-Type': 'application/json'}
   }
