@@ -32,7 +32,7 @@ module.exports = function (baseUrl, account, errorHandler) {
 
     params                = params || {}
     var requestNonce      = nonce.getNonce()
-    var authorization     = account && crypto.getAuthorization(account.userid, account.secret, method, uri, { body: body, params: params }, requestNonce)
+    var authorization     = account && crypto.getAccountAuthorization(account, method, uri, { body: body, params: params }, requestNonce)
     headers               = headers || {}
     headers.Authorization = authorization
     headers.Nonce         = requestNonce

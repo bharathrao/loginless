@@ -1,6 +1,7 @@
 var bitcoin    = require('bitcoinjs-lib')
 var crypto     = require('crypto')
 var affirm     = require('affirm.js')
+var nacl       = require('tweetnacl')
 
 module.exports = (function () {
   var ll = {}
@@ -56,20 +57,50 @@ module.exports = (function () {
 
     if (!secret) return 'HMAC ' + userId
     var message = JSON.stringify({ method: method, uri: uri, body: body, nonce: nonce })
+    var authMethod = secret.length === 128 ? ll.getAuthorizationApiKey : ll.getAuthorizationHmac
+    return authMethod(userId, secret, message)
+  }
+
+  ll.getAuthorizationHmac = function(userId, secret, message) {
     var hmac    = crypto.createHmac('sha256', new Buffer(secret, 'hex'))
     hmac.update(message)
     return 'HMAC ' + userId + ":" + hmac.digest('hex')
   }
 
+  ll.getAuthorizationApiKey = function (userId, secret, message) {
+    var keyPair = nacl.sign.keyPair.fromSecretKey(Buffer.from(secret, 'hex'))
+    var keyName = Buffer.from(keyPair.publicKey).toString('hex').substring(0, 16)
+    var signature = nacl.sign.detached(Buffer.from(message, 'utf8'), keyPair.secretKey)
+    return 'SIGN ' + userId + "." + keyName + ":" + Buffer.from(signature).toString('base64')
+  }
+
+  ll.getAccountAuthorization = function(account, method, uri, body, nonce) {
+    var message = JSON.stringify({ method: method, uri: uri, body: body, nonce: nonce })
+    if(account.apikey) return ll.getAuthorizationApiKey(account.userid, account.apikey, message)
+    if(account.secret) return ll.getAuthorizationHmac(account.userid, account.secret, message)
+  }
+
   ll.authenticate = function(user, auth, method, uri, body, nonce, receivedTime, nonceLatencyTolerance) {
-    ll.authenticateHMAC(user, auth, method, uri, body, nonce)
+    var authParts = auth.split(' ')
+    affirm(authParts[0], 'Expecting HMAC or SIGN Authorization')
+    var authenticator = ll.authenticators[authParts[0]]
+    affirm(authenticator, 'Unsupported Authorization method')
+    authenticator(user, auth, method, uri, body, nonce)
     ll.validateNonce(receivedTime, nonce, nonceLatencyTolerance)
   }
 
-  ll.authenticateHMAC = function (user, auth, method, uri, body, nonce) {
-    affirm(user && auth && auth.startsWith("HMAC "), badSignature(auth), 401)
+  ll.authenticateHMAC = function (user, authHMAC, method, uri, body, nonce) {
+    affirm(user && authHMAC && authHMAC.startsWith("HMAC "), badSignature(authHMAC), 401)
     var authorization = ll.getAuthorization(user.userid, user.secret, method, uri, body, nonce)
-    affirm(authorization === auth, badSignature(auth, 'Authentication failed. HMAC mismatch'), 401)
+    affirm(authorization === authHMAC, badSignature(authHMAC, 'Authentication failed. HMAC mismatch'), 401)
+  }
+
+  ll.authenticateSIGN = function (user, authSIGN, method, uri, body, nonce) {
+    affirm(user && authSIGN && authSIGN.startsWith("SIGN ") && (authSIGN.indexOf(':') > 0), badSignature(authSIGN, 'SIGN authentication needed'), 401)
+    var message   = Buffer.from(JSON.stringify({ method: method, uri: uri, body: body, nonce: nonce }), 'utf8')
+    var apikey    = Buffer.from(user.apikey, 'hex')
+    var signature = Buffer.from(authSIGN.split(':')[1], 'base64')
+    affirm(nacl.sign.detached.verify(message, signature, apikey), 'Authentication failed. SIGN mismatch')
   }
 
   ll.validateNonce = function (receivedTime, nonce, nonceLatencyTolerance) {
@@ -84,6 +115,12 @@ module.exports = (function () {
   function badSignature(auth, err) {
     return (err || 'HMAC authentication needed') + ' ' + auth
   }
+
+  ll.authenticators = {
+    'HMAC': ll.authenticateHMAC,
+    'SIGN': ll.authenticateSIGN
+  }
+
 
   return ll
 })()

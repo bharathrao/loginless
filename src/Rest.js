@@ -15,7 +15,7 @@ module.exports = function (baseuri, account) {
 
   REST.beforeSend = function (method, url, data) {
     var reqNonce = nonce.getNonce()
-    var auth     = account && crypto.getAuthorization(account.userid, account.secret, method, url, data, reqNonce)
+    var auth     = account && crypto.getAccountAuthorization(account, method, url, data, reqNonce)
     return {
       "Content-Type" : "application/json",
       "Nonce"        : reqNonce,
