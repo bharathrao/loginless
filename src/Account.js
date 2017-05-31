@@ -7,9 +7,9 @@ function Account(serverPublicKey, userPrivateKey) {
 
 Account.fromApiSecretKey = function(apikeyData){
   account = {}
-  account.apikey        = apikeyData.apiSecretKey
+  account.apikey        = apikeyData.secretKey
   account.userid        = apikeyData.userid
-  account.serverAddress = apikeyData.user1Address
+  account.serverAddress = apikeyData.serverAddress
   account.accountid     = apikeyData.accountid
   return account
 }

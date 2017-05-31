@@ -39,6 +39,13 @@ module.exports = function ll(origin, apiPath) {
     return { Authorization: auth, 'Content-Type': 'application/json'}
   }
 
+  loginless.initApiKey = function(apiKeyData){
+    loginless.account = Account.fromApiSecretKey(apiKeyData)
+    loginless.rest    = Rest(baseurl, loginless.account)
+    loginless.socket  = Socket(origin, loginless.account)
+  }
+
+
   function initLoginless(serverPromise, privateKey) {
     return serverPromise
       .then(function (meData) {

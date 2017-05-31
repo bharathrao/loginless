@@ -1,19 +1,18 @@
-var util       = require('util')
-var io         = require('socket.io-client')
-var affirm     = require('affirm.js')
-var cache      = require('ephemeral-cache')()
-var crypto     = require('./crypto')
-var nonce      = require('./nonce')
-var _          = require('lodash')
+var util   = require('util')
+var io     = require('socket.io-client')
+var affirm = require('affirm.js')
+var cache  = require('ephemeral-cache')()
+var crypto = require('./crypto')
+var nonce  = require('./nonce')
+var _      = require('lodash')
 
 module.exports = function (baseUrl, account, errorHandler) {
   var socket     = io(baseUrl, { rejectUnauthorized: true });
   socket.logging = false
 
   if (account) {
-    affirm(account.userid, 'Missing userid in account')
-    affirm(account.secret, 'Missing secret in account')
-    affirm(account.userPublicKey, 'Missing userPublicKey in account')
+    if (account.apikey) validateApiKey(account)
+    else validatePrivateKey(account)
   }
 
   socket.reconnect = function () {
@@ -70,6 +69,17 @@ module.exports = function (baseUrl, account, errorHandler) {
 
   function validMessage(message) {
     return message && message.data && message.data.headers && message.data.headers.Authorization
+  }
+
+  function validatePrivateKey(account) {
+    affirm(account.userPublicKey, 'Missing userPublicKey in account')
+    affirm(account.userid, 'Missing userid in account')
+    affirm(account.secret, 'Missing secret in account')
+  }
+
+  function validateApiKey(account) {
+    affirm(account.apikey, 'Missing apikey in account')
+    affirm(account.userid, 'Missing userid in account')
   }
 
   return socket
