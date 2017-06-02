@@ -16,7 +16,8 @@
     "ephemeral-cache": "^1.1.0",
     "lodash": "^4.17.4",
     "rest.js": "^0.2.1",
-    "socket.io-client": "^1.7.2"
+    "socket.io-client": "^1.7.2",
+    "tweetnacl": "^1.0.0"
   },
   "devDependencies": {
     "bluebird": "^3.4.7",
