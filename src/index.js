@@ -12,22 +12,20 @@ module.exports = function ll(origin, apiPath) {
   var authUri   = loginless.authUri = '/auth'
 
   loginless.registerKey = function (privateKeyWIF, registrationData) {
-    affirm(privateKeyWIF, 'Private key missing')
+    affirm(privateKeyWIF, 'Private key expected')
     var key       = bitcoinutil.addressFromPrivateKey(privateKeyWIF)
     var signature = bitcoinutil.signMessage(key.privateKey, registrationData)
     var regMesg   = [{ message: registrationData, signature: signature }]
     var authUrl = baseurl + authUri
     var headers = getHeaders(crypto.getAuthorization(key.address))
-    return initLoginless(restjs.post(authUrl, headers, regMesg), key.privateKey)
+    return restjs.post(authUrl, headers, regMesg).then(getBody)
   }
 
-  loginless.getServerKey = function (privateKeyWIF) {
-    affirm(privateKeyWIF, 'Private key missing')
-    var key  = bitcoinutil.addressFromPrivateKey(privateKeyWIF)
-    var auth = crypto.getAuthorization(key.address)
-    var authUrl = baseurl + authUri + '/' + key.publicKey
-    var headers = getHeaders(auth)
-    return initLoginless(restjs.get(authUrl, headers), key.privateKey)
+  loginless.getServerKey = function (publicKey) {
+    affirm(publicKey, 'public key expected')
+    var authUrl = baseurl + authUri + '/' + publicKey
+    var headers = getHeaders()
+    return restjs.get(authUrl, headers).then(getBody)
   }
 
   loginless.init = function(){
@@ -35,8 +33,14 @@ module.exports = function ll(origin, apiPath) {
     loginless.socket  = loginless.socket || Socket(origin)
   }
 
-  function getHeaders(auth){
-    return { Authorization: auth, 'Content-Type': 'application/json'}
+  function getHeaders(auth) {
+    var headers = {'Content-Type': 'application/json'}
+    if(auth) headers.Authorization = auth
+    return headers
+  }
+
+  function getBody(response) {
+    return response && response.body
   }
 
   loginless.initApiKey = function(apiKeyData){
@@ -45,15 +49,10 @@ module.exports = function ll(origin, apiPath) {
     loginless.socket  = Socket(origin, loginless.account)
   }
 
-
-  function initLoginless(serverPromise, privateKey) {
-    return serverPromise
-      .then(function (meData) {
-        loginless.account = Account(meData.body.serverPublicKey, privateKey)
-        loginless.rest    = Rest(baseurl, loginless.account)
-        loginless.socket  = Socket(origin, loginless.account)
-        return meData
-      })
+  loginless.initPrivateKey = function(serverPublicKey, privateKey) {
+    loginless.account = Account(serverPublicKey, privateKey)
+    loginless.rest    = Rest(baseurl, loginless.account)
+    loginless.socket  = Socket(origin, loginless.account)
   }
 
   return loginless
