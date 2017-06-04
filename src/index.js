@@ -43,8 +43,8 @@ module.exports = function ll(origin, apiPath) {
     return response && response.body
   }
 
-  loginless.initApiKey = function(apiKeyData){
-    loginless.account = Account.fromApiSecretKey(apiKeyData)
+  loginless.initApiKey = function(serverPublicKey, apiKeyData){
+    loginless.account = Account.fromApiSecretKey(serverPublicKey, apiKeyData)
     loginless.rest    = Rest(baseurl, loginless.account)
     loginless.socket  = Socket(origin, loginless.account)
   }
