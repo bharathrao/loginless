@@ -24,7 +24,7 @@ Account.fromApiSecretKey = function (serverPublicKey, apikeyData) {
 
 var populateFromPeer = Account.fromPrivateKey = function (serverPublicKey, userPrivateKey) {
   assert(serverPublicKey, 'Server public key is required');
-  assert(userPrivateKey || apiSecretKey, 'User private key/api SecretKey is required')
+  assert(userPrivateKey, 'User private key/api SecretKey is required')
   var account            = {}
   var peer               = Peer(serverPublicKey, userPrivateKey)
   account.userPrivateKey = peer.user2PrivateKey
