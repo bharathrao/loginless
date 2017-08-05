@@ -1,6 +1,6 @@
 {
   "name": "loginless",
-  "version": "4.0.3",
+  "version": "4.0.4",
   "description": "loginless module",
   "main": "src/index.js",
   "scripts": {
@@ -11,7 +11,7 @@
   "dependencies": {
     "affirm.js": "^1.0.0",
     "bitcoinjs-lib": "^2.2.0",
-    "bitcoinutil": "^3.0.0",
+    "bitcoinutil": "^3.0.2",
     "crypto": "0.0.3",
     "ephemeral-cache": "^1.1.0",
     "lodash": "^4.17.4",
